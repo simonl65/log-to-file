@@ -45,14 +45,16 @@ class Logger:
         self,
         filename: str,
         source: str = "root",
-        level: str = "INFO",
+        level: str | None = "INFO",
         max_bytes: int = 0,
         backup_count: int = 0,
         use_ticks: bool = False,
     ) -> None:
         self.filename = filename
         self.source = source
-        if level is None or (isinstance(level, str) and level.upper() == "NONE"):
+        if level is None or (
+            isinstance(level, str) and level.upper() == "NONE"
+        ):
             self.level_name = "NONE"
             self.level = DISABLED
         else:
