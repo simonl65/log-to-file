@@ -1,0 +1,50 @@
+[project]
+name = "log-to-file"
+version = "0.1.0"
+description = "MicroPython package to log messages to a file with rotation support"
+readme = "README.md"
+authors = [{ name = "Simon R. Lincoln", email = "oss@codeability.co.uk" }]
+requires-python = ">=3.13"
+dependencies = []
+
+[project.scripts]
+log-to-file = "log_to_file:main"
+
+[build-system]
+requires = ["uv_build>=0.10.9,<0.11.0"]
+build-backend = "uv_build"
+
+# --- Ruff ---
+[tool.ruff]
+src = ["src"]
+line-length = 80
+target-version = "py312"
+exclude = ["build", "dist", ".venv", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes errors
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear bug-hunting (e.g., bare except)
+    "SIM", # flake8-simplify
+    "S",   # security
+]
+ignore = [
+    "E501",   # line length handled by formatter
+    "SIM105", # MicroPython should ignore suppressible-exception (try-except-pass)
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+
+# --- Pytest ---
+[tool.pytest.ini_options]
+minversion = "6.0"
+pythonpath = ["src"]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py", "*_tests.py"]
