@@ -26,17 +26,17 @@ Upload the package structure to your MicroPython device's filesystem:
 ## Usage
 
 ```python
-from log_to_file import FileLogger
+from log_to_file import Logger
 
 # Initialize a logger with custom source, 10KB size limit and 3 backups (uses Unix epoch timestamp by default)
-logger = FileLogger("app.log", source="main_sensor", level="INFO", max_bytes=10240, backup_count=3)
+logger = Logger("app.log", source="main_sensor", level="INFO", max_bytes=10240, backup_count=3)
 
 # Log messages
 logger.info("System initialized")
 logger.warning("Low memory warning: %d bytes free", 12340)
 
 # Or initialize to use millisecond ticks_ms() (ideal for microcontrollers without an RTC)
-logger_ticks = FileLogger("app.log", source="main_sensor", level="INFO", use_ticks=True)
+logger_ticks = Logger("app.log", source="main_sensor", level="INFO", use_ticks=True)
 logger_ticks.info("Ticks mode initialized")
 ```
 

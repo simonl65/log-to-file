@@ -35,7 +35,7 @@ _level_values = {
 }
 
 
-class FileLogger:
+class Logger:
     def __init__(
         self,
         filename: str,
@@ -60,11 +60,19 @@ class FileLogger:
                 sfn = f"{self.filename}.{i}"
                 dfn = f"{self.filename}.{i + 1}"
                 try:
+                    os.remove(dfn)
+                except OSError:
+                    pass
+                try:
                     os.rename(sfn, dfn)
                 except OSError:
                     pass
             # Rename rotation.log -> rotation.log.1
             dfn = f"{self.filename}.1"
+            try:
+                os.remove(dfn)
+            except OSError:
+                pass
             try:
                 os.rename(self.filename, dfn)
             except OSError:
@@ -124,12 +132,12 @@ class FileLogger:
 
 
 def main() -> None:
-    logger = FileLogger("app.log", level="DEBUG")
+    logger = Logger("app.log", level="DEBUG")
     logger.info("Hello from log-to-file!")
 
 
 __all__ = [
-    "FileLogger",
+    "Logger",
     "CRITICAL",
     "ERROR",
     "WARNING",
