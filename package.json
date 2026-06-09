@@ -3,6 +3,10 @@
     [
       "log_to_file/__init__.py",
       "src/log_to_file/__init__.py"
+    ],
+    [
+      "log_to_file/__init__.py",
+      "src/log_to_file/__init__.py"
     ]
   ],
   "version": "1.0.0"
