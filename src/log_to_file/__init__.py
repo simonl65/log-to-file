@@ -9,14 +9,17 @@ except AttributeError:
         return int(time.time() * 1000)
 
 
+ALWAYS = 100
 CRITICAL = 50
 ERROR = 40
 WARNING = 30
 INFO = 20
 DEBUG = 10
 NOTSET = 0
+DISABLED = 999
 
 _level_names = {
+    ALWAYS: "ALWAYS",
     CRITICAL: "CRITICAL",
     ERROR: "ERROR",
     WARNING: "WARNING",
@@ -26,12 +29,14 @@ _level_names = {
 }
 
 _level_values = {
+    "ALWAYS": ALWAYS,
     "CRITICAL": CRITICAL,
     "ERROR": ERROR,
     "WARNING": WARNING,
     "INFO": INFO,
     "DEBUG": DEBUG,
     "NOTSET": NOTSET,
+    "NONE": DISABLED,
 }
 
 
@@ -40,15 +45,21 @@ class Logger:
         self,
         filename: str,
         source: str = "root",
-        level: str = "INFO",
+        level: str | None = "INFO",
         max_bytes: int = 0,
         backup_count: int = 0,
         use_ticks: bool = False,
     ) -> None:
         self.filename = filename
         self.source = source
-        self.level_name = level.upper()
-        self.level = _level_values.get(self.level_name, INFO)
+        if level is None or (
+            isinstance(level, str) and level.upper() == "NONE"
+        ):
+            self.level_name = "NONE"
+            self.level = DISABLED
+        else:
+            self.level_name = level.upper()
+            self.level = _level_values.get(self.level_name, INFO)
         self.max_bytes = max_bytes
         self.backup_count = backup_count
         self.use_ticks = use_ticks
@@ -130,6 +141,9 @@ class Logger:
     def critical(self, msg: str, *args) -> None:
         self.log(CRITICAL, "CRITICAL", msg, *args)
 
+    def always(self, msg: str, *args) -> None:
+        self.log(ALWAYS, "ALWAYS", msg, *args)
+
 
 def main() -> None:
     logger = Logger("app.log", level="DEBUG")
@@ -138,6 +152,7 @@ def main() -> None:
 
 __all__ = [
     "Logger",
+    "ALWAYS",
     "CRITICAL",
     "ERROR",
     "WARNING",
