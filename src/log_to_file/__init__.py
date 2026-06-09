@@ -8,6 +8,7 @@ except AttributeError:
     def ticks_ms() -> int:
         return int(time.time() * 1000)
 
+
 CRITICAL = 50
 ERROR = 40
 WARNING = 30
@@ -33,8 +34,17 @@ _level_values = {
     "NOTSET": NOTSET,
 }
 
+
 class FileLogger:
-    def __init__(self, filename: str, source: str = "root", level: str = "INFO", max_bytes: int = 0, backup_count: int = 0, use_ticks: bool = False) -> None:
+    def __init__(
+        self,
+        filename: str,
+        source: str = "root",
+        level: str = "INFO",
+        max_bytes: int = 0,
+        backup_count: int = 0,
+        use_ticks: bool = False,
+    ) -> None:
         self.filename = filename
         self.source = source
         self.level_name = level.upper()
@@ -112,8 +122,18 @@ class FileLogger:
     def critical(self, msg: str, *args) -> None:
         self.log(CRITICAL, "CRITICAL", msg, *args)
 
+
 def main() -> None:
     logger = FileLogger("app.log", level="DEBUG")
     logger.info("Hello from log-to-file!")
 
-__all__ = ["FileLogger", "CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG", "NOTSET"]
+
+__all__ = [
+    "FileLogger",
+    "CRITICAL",
+    "ERROR",
+    "WARNING",
+    "INFO",
+    "DEBUG",
+    "NOTSET",
+]
