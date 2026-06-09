@@ -1,5 +1,4 @@
 import os
-import time
 
 CRITICAL = 50
 ERROR = 40
@@ -27,17 +26,13 @@ _level_values = {
 }
 
 class FileLogger:
-    def __init__(self, filename: str, level: str = "INFO", max_bytes: int = 0, backup_count: int = 0) -> None:
+    def __init__(self, filename: str, source: str = "root", level: str = "INFO", max_bytes: int = 0, backup_count: int = 0) -> None:
         self.filename = filename
+        self.source = source
         self.level_name = level.upper()
         self.level = _level_values.get(self.level_name, INFO)
         self.max_bytes = max_bytes
         self.backup_count = backup_count
-
-    def _get_time_str(self) -> str:
-        # Returns YYYY-MM-DD HH:MM:SS format
-        t = time.localtime()
-        return f"{t[0]:04d}-{t[1]:02d}-{t[2]:02d} {t[3]:02d}:{t[4]:02d}:{t[5]:02d}"
 
     def _rotate_files(self) -> None:
         if self.backup_count > 0:
@@ -88,8 +83,7 @@ class FileLogger:
             except Exception:  # noqa: S110
                 pass
 
-        time_str = self._get_time_str()
-        formatted_msg = f"{time_str} [{level_name}] {msg}"
+        formatted_msg = f"[{level_name:8}] [{self.source:20}] {msg}"
         self._write(formatted_msg)
 
     def debug(self, msg: str, *args) -> None:

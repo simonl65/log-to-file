@@ -24,29 +24,31 @@ def test_log_levels(tmp_path):
 
 def test_log_formatting(tmp_path):
     log_file = str(tmp_path / "test.log")
+    # By default, source is "root"
     logger = FileLogger(log_file, level="DEBUG")
     
     logger.info("test format")
     
     with open(log_file, "r") as f:
-        line = f.readline().strip()
+        line = f.readline().rstrip("\n")
     
-    # Format should be: "YYYY-MM-DD HH:MM:SS [INFO] test format"
-    # Let's check length and format using split
-    parts = line.split(" ", 2)
-    assert len(parts) == 3
+    # Format should be: "[INFO    ] [root                ] test format"
+    # Level 'INFO' is 4 chars, padded to 8 -> 'INFO    '
+    # Source 'root' is 4 chars, padded to 20 -> 'root                '
+    assert line == "[INFO    ] [root                ] test format"
+
+def test_log_custom_source(tmp_path):
+    log_file = str(tmp_path / "test.log")
+    logger = FileLogger(log_file, source="my_module", level="DEBUG")
     
-    date_part, time_part, msg_part = parts
-    # Check date format YYYY-MM-DD
-    assert len(date_part) == 10
-    assert date_part[4] == "-" and date_part[7] == "-"
+    logger.debug("debug custom source")
     
-    # Check time format HH:MM:SS
-    assert len(time_part) == 8
-    assert time_part[2] == ":" and time_part[5] == ":"
-    
-    # Check level and message
-    assert msg_part == "[INFO] test format"
+    with open(log_file, "r") as f:
+        line = f.readline().rstrip("\n")
+        
+    # Level 'DEBUG' is 5 chars, padded to 8 -> 'DEBUG   '
+    # Source 'my_module' is 9 chars, padded to 20 -> 'my_module           '
+    assert line == "[DEBUG   ] [my_module           ] debug custom source"
 
 def test_log_arguments(tmp_path):
     log_file = str(tmp_path / "test.log")
