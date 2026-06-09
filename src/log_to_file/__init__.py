@@ -1,4 +1,12 @@
 import os
+import time
+
+try:
+    ticks_ms = time.ticks_ms
+except AttributeError:
+    # Fallback for standard Python test environment
+    def ticks_ms() -> int:
+        return int(time.time() * 1000)
 
 CRITICAL = 50
 ERROR = 40
@@ -26,13 +34,14 @@ _level_values = {
 }
 
 class FileLogger:
-    def __init__(self, filename: str, source: str = "root", level: str = "INFO", max_bytes: int = 0, backup_count: int = 0) -> None:
+    def __init__(self, filename: str, source: str = "root", level: str = "INFO", max_bytes: int = 0, backup_count: int = 0, use_ticks: bool = False) -> None:
         self.filename = filename
         self.source = source
         self.level_name = level.upper()
         self.level = _level_values.get(self.level_name, INFO)
         self.max_bytes = max_bytes
         self.backup_count = backup_count
+        self.use_ticks = use_ticks
 
     def _rotate_files(self) -> None:
         if self.backup_count > 0:
@@ -83,7 +92,9 @@ class FileLogger:
             except Exception:  # noqa: S110
                 pass
 
-        formatted_msg = f"[{level_name:8}] [{self.source:20}] {msg}"
+        timestamp = ticks_ms() if self.use_ticks else int(time.time())
+
+        formatted_msg = f"{timestamp} [{level_name:8}] [{self.source:20}] {msg}"
         self._write(formatted_msg)
 
     def debug(self, msg: str, *args) -> None:

@@ -24,7 +24,7 @@ def test_log_levels(tmp_path):
 
 def test_log_formatting(tmp_path):
     log_file = str(tmp_path / "test.log")
-    # By default, source is "root"
+    # By default, source is "root", use_ticks is False
     logger = FileLogger(log_file, level="DEBUG")
     
     logger.info("test format")
@@ -32,10 +32,31 @@ def test_log_formatting(tmp_path):
     with open(log_file, "r") as f:
         line = f.readline().rstrip("\n")
     
-    # Format should be: "[INFO    ] [root                ] test format"
-    # Level 'INFO' is 4 chars, padded to 8 -> 'INFO    '
-    # Source 'root' is 4 chars, padded to 20 -> 'root                '
-    assert line == "[INFO    ] [root                ] test format"
+    # Format should be: "timestamp [INFO    ] [root                ] test format"
+    # where timestamp is a Unix timestamp (integer seconds)
+    parts = line.split(" ", 1)
+    assert len(parts) == 2
+    timestamp_str, msg_part = parts
+    
+    assert timestamp_str.isdigit()
+    assert msg_part == "[INFO    ] [root                ] test format"
+
+def test_log_formatting_ticks(tmp_path):
+    log_file = str(tmp_path / "test.log")
+    # Initialize with use_ticks=True
+    logger = FileLogger(log_file, use_ticks=True, level="DEBUG")
+    
+    logger.info("test ticks")
+    
+    with open(log_file, "r") as f:
+        line = f.readline().rstrip("\n")
+        
+    parts = line.split(" ", 1)
+    assert len(parts) == 2
+    timestamp_str, msg_part = parts
+    
+    assert timestamp_str.isdigit()
+    assert msg_part == "[INFO    ] [root                ] test ticks"
 
 def test_log_custom_source(tmp_path):
     log_file = str(tmp_path / "test.log")
@@ -46,9 +67,12 @@ def test_log_custom_source(tmp_path):
     with open(log_file, "r") as f:
         line = f.readline().rstrip("\n")
         
-    # Level 'DEBUG' is 5 chars, padded to 8 -> 'DEBUG   '
-    # Source 'my_module' is 9 chars, padded to 20 -> 'my_module           '
-    assert line == "[DEBUG   ] [my_module           ] debug custom source"
+    parts = line.split(" ", 1)
+    assert len(parts) == 2
+    timestamp_str, msg_part = parts
+    
+    assert timestamp_str.isdigit()
+    assert msg_part == "[DEBUG   ] [my_module           ] debug custom source"
 
 def test_log_arguments(tmp_path):
     log_file = str(tmp_path / "test.log")
