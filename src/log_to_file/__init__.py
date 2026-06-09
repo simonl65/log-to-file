@@ -132,12 +132,12 @@ class Logger:
 
 
 def main() -> None:
-    logger = FileLogger("app.log", level="DEBUG")
+    logger = Logger("app.log", level="DEBUG")
     logger.info("Hello from log-to-file!")
 
 
 __all__ = [
-    "FileLogger",
+    "Logger",
     "CRITICAL",
     "ERROR",
     "WARNING",
