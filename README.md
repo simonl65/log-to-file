@@ -7,7 +7,7 @@ A simple, lightweight MicroPython file logger package with log rotation support.
 ## Key Features
 
 - **MicroPython Compatible**: Uses standard Python and MicroPython standard library functions (like `time.localtime` and `os.stat`).
-- **File Rotation**: Supports log file size limits (`max_bytes`) and automatic backups rotation (`backup_count`).
+- **File Rotation**: Supports log file size limits (`max_bytes` [default = 10KB]) and automatic backups rotation (`backup_count` [default = 1]).
 - **Safe Writes**: Opens and closes the log file on every write, ensuring messages are flushed and safe from unexpected microcontroller resets.
 - **Log Levels**: Supports standard levels: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`.
 - **String Formatting**: Support `%`-style string formatting arguments.
