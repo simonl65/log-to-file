@@ -46,8 +46,8 @@ class Logger:
         filename: str,
         source: str = "root",
         level: str | None = "INFO",
-        max_bytes: int = 0,
-        backup_count: int = 0,
+        max_bytes: int = 10240,
+        backup_count: int = 1,
         use_ticks: bool = False,
     ) -> None:
         self.filename = filename
