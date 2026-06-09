@@ -1,12 +1,12 @@
 import os
 import time
-from log_to_file import FileLogger
+from log_to_file import Logger
 
 def test_log_levels(tmp_path):
     log_file = str(tmp_path / "test.log")
     
     # Logger with INFO level
-    logger = FileLogger(log_file, level="INFO")
+    logger = Logger(log_file, level="INFO")
     
     logger.debug("debug message")
     logger.info("info message")
@@ -25,7 +25,7 @@ def test_log_levels(tmp_path):
 def test_log_formatting(tmp_path):
     log_file = str(tmp_path / "test.log")
     # By default, source is "root", use_ticks is False
-    logger = FileLogger(log_file, level="DEBUG")
+    logger = Logger(log_file, level="DEBUG")
     
     logger.info("test format")
     
@@ -44,7 +44,7 @@ def test_log_formatting(tmp_path):
 def test_log_formatting_ticks(tmp_path):
     log_file = str(tmp_path / "test.log")
     # Initialize with use_ticks=True
-    logger = FileLogger(log_file, use_ticks=True, level="DEBUG")
+    logger = Logger(log_file, use_ticks=True, level="DEBUG")
     
     logger.info("test ticks")
     
@@ -60,7 +60,7 @@ def test_log_formatting_ticks(tmp_path):
 
 def test_log_custom_source(tmp_path):
     log_file = str(tmp_path / "test.log")
-    logger = FileLogger(log_file, source="my_module", level="DEBUG")
+    logger = Logger(log_file, source="my_module", level="DEBUG")
     
     logger.debug("debug custom source")
     
@@ -76,7 +76,7 @@ def test_log_custom_source(tmp_path):
 
 def test_log_arguments(tmp_path):
     log_file = str(tmp_path / "test.log")
-    logger = FileLogger(log_file, level="DEBUG")
+    logger = Logger(log_file, level="DEBUG")
     
     logger.info("hello %s %d", "world", 42)
     
@@ -90,7 +90,7 @@ def test_log_rotation_with_backups(tmp_path):
     
     # Max size 60 bytes, 2 backups
     # Each log entry will be about 30-40 bytes
-    logger = FileLogger(log_file, level="INFO", max_bytes=60, backup_count=2)
+    logger = Logger(log_file, level="INFO", max_bytes=60, backup_count=2)
     
     # Write some logs
     logger.info("Line 1")  # Writes to rotation.log
@@ -109,7 +109,7 @@ def test_log_rotation_without_backups(tmp_path):
     log_file = str(tmp_path / "rotation_nobackup.log")
     
     # Max size 60 bytes, 0 backups
-    logger = FileLogger(log_file, level="INFO", max_bytes=60, backup_count=0)
+    logger = Logger(log_file, level="INFO", max_bytes=60, backup_count=0)
     
     logger.info("Line 1")
     logger.info("Line 2")
