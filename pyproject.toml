@@ -1,10 +1,10 @@
 [project]
 name = "log-to-file"
-version = "0.1.0"
+version = "1.0.0"
 description = "MicroPython package to log messages to a file with rotation support"
 readme = "README.md"
 authors = [{ name = "Simon R. Lincoln", email = "oss@codeability.co.uk" }]
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 dependencies = []
 
 [project.scripts]
