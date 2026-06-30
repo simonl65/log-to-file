@@ -2,7 +2,7 @@ import os
 import time
 
 try:
-    ticks_ms = time.ticks_ms
+    ticks_ms = time.ticks_ms  # type: ignore
 except AttributeError:
     # Fallback for standard Python test environment
     def ticks_ms() -> int:
@@ -64,12 +64,32 @@ class Logger:
         self.backup_count = backup_count
         self.use_ticks = use_ticks
 
-        directory = os.path.dirname(filename)  # type: ignore
-        if directory:
+        self._ensure_dir(filename)
+
+    @staticmethod
+    def _ensure_dir(filename: str) -> None:
+        # MicroPython's `os` module has no `os.path` and (on most ports) no
+        # `os.makedirs`, so directories are split out and created manually,
+        # one path segment at a time.
+        idx = filename.rfind("/")
+        if idx <= 0:
+            return  # no directory component (or root-level file)
+
+        directory = filename[:idx]
+        parts = directory.split("/")
+        path = ""
+        for part in parts:
+            if not part:
+                # leading slash on an absolute path
+                path = "/"
+                continue
+            path = part if not path or path == "/" else path + "/" + part
+            if path == "/":
+                continue
             try:
-                os.makedirs(directory)
+                os.mkdir(path)
             except OSError:
-                pass
+                pass  # already exists (or can't be created; caught later on write)
 
     def _rotate_files(self) -> None:
         if self.backup_count > 0:
