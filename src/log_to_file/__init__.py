@@ -64,6 +64,13 @@ class Logger:
         self.backup_count = backup_count
         self.use_ticks = use_ticks
 
+        directory = os.path.dirname(filename)  # type: ignore
+        if directory:
+            try:
+                os.makedirs(directory)
+            except OSError:
+                pass
+
     def _rotate_files(self) -> None:
         if self.backup_count > 0:
             # Shift old backups rotation.log.N -> rotation.log.N+1
